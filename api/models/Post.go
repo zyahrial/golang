@@ -19,6 +19,7 @@ type Post struct {
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
+
 func (p *Post) Prepare() {
 	p.ID = 0
 	p.Title = html.EscapeString(strings.TrimSpace(p.Title))
@@ -74,6 +75,24 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 	}
 	return &posts, nil
 }
+
+// func (p *Me) FindMyPost(db *gorm.DB) (*[]Me, error) {
+// 	var err error
+// 	posts := []Me{}
+// 	err = db.Debug().Model(&Post{}).Limit(100).Find(&posts).Error
+// 	if err != nil {
+// 		return &[]Post{}, err
+// 	}
+// 	if len(posts) > 0 {
+// 		for i, _ := range posts {
+// 			err := db.Debug().Model(&User{}).Where("id = ?", posts[i].AuthorID).Take(&posts[i].Author).Error
+// 			if err != nil {
+// 				return &[]Post{}, err
+// 			}
+// 		}
+// 	}
+// 	return &posts, nil
+// }
 
 func (p *Post) FindPostByID(db *gorm.DB, pid uint64) (*Post, error) {
 	var err error

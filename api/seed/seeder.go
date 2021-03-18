@@ -9,14 +9,30 @@ import (
 
 var users = []models.User{
 	models.User{
-		Nickname: "Steven victor",
-		Email:    "steven@gmail.com",
+		Nickname: "Khaerus Zyahrial",
+		Email:    "khaerus@gmail.com",
 		Password: "password",
+		Kecamatan:    "Pekalongan Barat",
+		Kota:    "Pekalongan",
+		Provinsi:    "Jawa Tengah",
+		Negara:    "Indonesia",
+		Latitude:    "23676327423as",
+		Longitude:	"16512363645as",
+		Level:	0,
+		Alamat:    "Jl. Urip Sumoharjo no.171 02/04 Desa Pringlangu",
 	},
 	models.User{
-		Nickname: "Martin Luther",
-		Email:    "luther@gmail.com",
+		Nickname: "Sheza",
+		Email:    "sheza@gmail.com",
 		Password: "password",
+		Kecamatan:    "Medan Satria",
+		Kota:    "Bekasi",
+		Provinsi:    "Jawa Barat",
+		Negara:    "Indonesia",
+		Latitude:    "1235123423232sf",
+		Longitude:	"165123.63645sf",
+		Level:	1,
+		Alamat:    "Jl. Kaliabang Bungur no.11 02/03 Desa Pejuang",
 	},
 }
 

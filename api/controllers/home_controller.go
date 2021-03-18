@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/zyahrial/gocode/api/responses"
+	"github.com/zyahrial/blantik-be/api/responses"
 )
 
 func (server *Server) Home(w http.ResponseWriter, r *http.Request) {

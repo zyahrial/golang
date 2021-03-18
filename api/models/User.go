@@ -13,10 +13,18 @@ import (
 )
 
 type User struct {
-	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	ID        uint32    `gorm:"primary_key; auto_increment" json:"id"`
 	Nickname  string    `gorm:"size:255;not null;unique" json:"nickname"`
 	Email     string    `gorm:"size:100;not null;unique" json:"email"`
 	Password  string    `gorm:"size:100;not null;" json:"password"`
+	Kecamatan  string    `gorm:"size:255;not null;" json:"kecamatan"`
+	Kota  string    `gorm:"size:255;not null;" json:"kota"`
+	Provinsi  string    `gorm:"size:255;not null;" json:"provinsi"`
+	Negara  string    `gorm:"size:255;not null;" json:"negara"`
+	Alamat  string    `gorm:"size:255;not null;" json:"alamat"`
+	Latitude  string    `gorm:"size:255;not null;" json:"latitude"`
+	Longitude  string   `gorm:"size:255;not null;" json:"longitude"`
+	Level  int64   `gorm:"size:11;not null;" json:"level"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
@@ -42,6 +50,14 @@ func (u *User) Prepare() {
 	u.ID = 0
 	u.Nickname = html.EscapeString(strings.TrimSpace(u.Nickname))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+	u.Kecamatan = html.EscapeString(strings.TrimSpace(u.Kecamatan))
+	u.Kota = html.EscapeString(strings.TrimSpace(u.Kota))
+	u.Provinsi = html.EscapeString(strings.TrimSpace(u.Provinsi))
+	u.Negara = html.EscapeString(strings.TrimSpace(u.Negara))
+	u.Alamat = html.EscapeString(strings.TrimSpace(u.Alamat))
+	u.Latitude = html.EscapeString(strings.TrimSpace(u.Latitude))
+	u.Longitude = html.EscapeString(strings.TrimSpace(u.Longitude))
+	u.Level = 0
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 }
@@ -60,10 +76,25 @@ func (u *User) Validate(action string) error {
 		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid Email")
+		if u.Kecamatan == "" {
+			return errors.New("Required Kecamatan")
+		}
+		if u.Kota == "" {
+			return errors.New("Required Kota")
+		}
+		if u.Provinsi == "" {
+			return errors.New("Required Provinsi")
+		}
+		if u.Negara == "" {
+			return errors.New("Required Negara")
+		}
+		if u.Alamat == "" {
+			return errors.New("Required Alamat")
+		}
 		}
 
 		return nil
-	case "login":
+		case "login":
 		if u.Password == "" {
 			return errors.New("Required Password")
 		}
@@ -102,15 +133,36 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 	return u, nil
 }
 
-func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
+// func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
+// 	var err error
+// 	users := []User{}
+
+// 	err = db.Debug().Model(&User{}).Where("level = 0").Limit(100).Find(&users).Error
+
+// 	if err != nil {
+// 		return &[]User{}, err
+// 	}
+// 	return &users, err
+// }
+
+func (p *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
 	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}
-	return &users, err
+	if len(users) > 0 {
+		for i, _ := range users {
+			err := db.Debug().Model(&User{}).Where("level = ?", users[i].Level).Take(&users[i]).Error
+			if err != nil {
+				return &[]User{}, err
+			}
+		}
+	}
+	return &users, nil
 }
+
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	var err error
